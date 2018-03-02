@@ -1,6 +1,11 @@
 import pymongo
 from pymongo import MongoClient
 import sys
+import progressbar as pb
+
+widgets = ['Time:', pb.Percentage(), ' ',pb.Bar(marker=pb.RotatingMarker()), ' ', pb.ETA()]
+
+timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
@@ -30,7 +35,7 @@ def pathCleaning(path_array):
 
 with open(sys.argv[1]) as bgp_routeviews:
 
-
+	time=0
 	for bgp_advertisement in bgp_routeviews:
 		path_array=bgp_advertisement.split()
 		
@@ -80,4 +85,6 @@ with open(sys.argv[1]) as bgp_routeviews:
 					{"prefix":path_array[0]},
 					{"$push":{"baseAs":base}}
 				)
-
+		time+=1
+		timer.update(time)
+	timer.finish()
