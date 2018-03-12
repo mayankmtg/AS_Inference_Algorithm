@@ -9,7 +9,7 @@ timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
-collection=db.bgpPaths
+collection=db.bgpGraph
 
 if(len(sys.argv)<2):
 	print("Error-Enter Command in format: python populate.py <file-name>")
@@ -47,17 +47,17 @@ with open(sys.argv[1]) as bgp_routeviews:
 		
 		clean_path=pathCleaning(path_array)
 
-		path_dict={}
+		path_rev=""
 		as_index=1
 		n=len(path_array)
 		for auto_system in clean_path:
 			baseAs.append(auto_system)
-			path_dict["AS"+str(as_index)]=auto_system
-			as_index+=1
+			path_rev+=auto_system
+			path_rev+="|"
 
 		if prefix_data!=None:
 			nPaths=len(prefix_data['paths'])
-			prefix_data['paths']["path"+str(nPaths+1)]=path_dict
+			prefix_data['paths']["path"+str(nPaths+1)]=path_rev
 			collection.save(prefix_data)
 		
 		else:
@@ -66,10 +66,10 @@ with open(sys.argv[1]) as bgp_routeviews:
 			# prefix contains the name of the IP prefix taken into consideration
 			new_prefix_data['prefix']=path_array[0]
 			
-			# paths contains the list of all paths in dictionary format like:-   "path1":{"AS1":"1", "AS2":2}
+			# paths contains the list of all paths in dictionary format like:-   "path1":"1|2|"
 			new_prefix_data['paths']={}
 			ref_object=new_prefix_data['paths']
-			ref_object['path1']=path_dict
+			ref_object['path1']=path_rev
 
 			# base ases contain the unique ases that belong to each as path for a particular prefix
 			new_prefix_data['baseAs']=baseAs
