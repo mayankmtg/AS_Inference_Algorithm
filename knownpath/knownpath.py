@@ -11,26 +11,12 @@ queue=Queue.Queue()
 
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
-Graph=db.bgpPaths
+Graph=db.bgpGraph
 Neighs=db.bgpNeighs
 
 
-
-def valleyFree(path, extended_AS):
-	path_length=len(path)
-	
-
-
-
-def INITACTIVEQUEUE(prefix, queue, graph, baseASset):
-
-	for v in baseASset:
-		queue.put(v)
-		rib_in(v)[p][0] = sure path of v
-		SORT(rib in(v)[p])
-
 def peers(u):
-	# return a tupple of neighbour and type of neighbour
+	# return array of tupples of neighbour and type of neighbour
 	peers=Neighs.find_one({'as':u})
 	peer_tupples=[]
 	siblings=peers['neighbours']['siblings']
@@ -44,6 +30,46 @@ def peers(u):
 		peer_tupples.append((provider, 'p'))
 
 	return peer_tupples
+
+
+def relation(a,b):
+	# find the relationship of a to b
+
+	peers_a=peers(a)
+	for i in peers_a:
+		if(i[0]==b):
+			return i[1]
+
+	# return 'p' if a is provider of b and 'c', 's' otherwise
+
+
+def valleyFree(path, extended_AS):
+	# method returns 1 if the extended path is valley free
+	prev_path=path.split('|')
+
+	# path of the form '1|2|3|4|' therefore 1 is subtracted
+	n=len(prev_path)-1
+	# main concentration on relationship of n-2 and n-1 elements of the array only
+
+	last_relation=relation(prev_path[n-2], prev_path[n-1])
+	new_relation=relation(prev_path[n-1], extended_AS)
+
+	# last_relation=='p'   => provider to customer
+
+	if(last_relation=='p' and new_relation=='c'):
+		return 0
+	elif(last_relation=='s' and new_relation=='c'):
+		return 0
+	else:
+		return 1
+
+
+def INITACTIVEQUEUE(prefix, queue, graph, baseASset):
+
+	for v in baseASset:
+		queue.put(v)
+		rib_in(v)[p][0] = sure path of v
+		SORT(rib in(v)[p])
 
 
 def KNOWNPATH(prefix):
