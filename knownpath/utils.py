@@ -97,5 +97,40 @@ def ribin_insert(Ribin, prefix, auto_system, new_path):
 	)
 	return 1
 
-def bestPath(path_list):
+
+
+# the Freq is the bgpFreq collection and path is any path separated with '|'
+def pathFreq(Freq, path_array):
+	consec_freq=[]
+	for x,y in zip(path_array[:-1], path_array[1:]):
+		freq=Freq.find_one({'as1':x, 'as2':y})
+		consec_freq.append(freq['freq'])
+	return min(freq)
+
+
+
+
+# path list contains path in the form of a|b|c||d|e where || stands for unsure path after
+
+def bestPath(Freq, path_list):
+	path_dict_array=[]
+	for path in path_list:
+
+		unsure_sec=path.split('||')
+		
+		ulen=len(unsure_sec[1])
+
+		path_array=unsure_sec[0].split('|')+unsure_sec[1].split('|')
+		path_len=len(path_array)
+		freq=pathFreq(Freq, path_array)
+		path_dict={
+			'path':path,
+			'len':path_len,
+			'freq':freq,
+			'ulen':ulen
+		}
+		path_dict_array.append(path_dict)
+	# sorting based on len first, freq second and then ulen
+	return sorted(path_dict_array, key= lambda i:(i['len'],i['freq'], i['ulen']))
+
 	
