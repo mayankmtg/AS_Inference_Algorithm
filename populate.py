@@ -10,6 +10,8 @@ timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
 collection=db.bgpGraph
+freq=db.bgpFreq
+
 
 if(len(sys.argv)<2):
 	print("Error-Enter Command in format: python populate.py <file-name>")
@@ -47,17 +49,17 @@ with open(sys.argv[1]) as bgp_routeviews:
 		
 		clean_path=pathCleaning(path_array)
 
-		path_rev=""
+		path_forward=""
 		as_index=1
 		n=len(path_array)
 		for auto_system in clean_path:
 			baseAs.append(auto_system)
-			path_rev+=auto_system
-			path_rev+="|"
+			path_forward+=auto_system
+			path_forward+="|"
 
 		if prefix_data!=None:
 			nPaths=len(prefix_data['paths'])
-			prefix_data['paths']["path"+str(nPaths+1)]=path_rev
+			prefix_data['paths']["path"+str(nPaths+1)]=path_forward
 			collection.save(prefix_data)
 		
 		else:
@@ -69,7 +71,7 @@ with open(sys.argv[1]) as bgp_routeviews:
 			# paths contains the list of all paths in dictionary format like:-   "path1":"1|2|"
 			new_prefix_data['paths']={}
 			ref_object=new_prefix_data['paths']
-			ref_object['path1']=path_rev
+			ref_object['path1']=path_forward
 
 			# base ases contain the unique ases that belong to each as path for a particular prefix
 			new_prefix_data['baseAs']=baseAs

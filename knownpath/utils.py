@@ -49,7 +49,11 @@ def valleyFree(Neighs,path, extended_AS):
 
 	if(last_relation=='p' and new_relation=='c'):
 		return 0
+	elif(last_relation=='p' and new_relation=='s'):
+		return 0
 	elif(last_relation=='s' and new_relation=='c'):
+		return 0
+	elif(last_relation=='s' and new_relation=='s'):
 		return 0
 	else:
 		return 1
@@ -92,3 +96,6 @@ def ribin_insert(Ribin, prefix, auto_system, new_path):
 		{'$addToSet':{'paths':new_path}}
 	)
 	return 1
+
+def bestPath(path_list):
+	

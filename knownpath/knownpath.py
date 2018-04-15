@@ -10,7 +10,10 @@ from utils import surePath, ribin_insert, peers
 
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
+
+# Graph contains all the paths
 Graph=db.bgpGraph
+# neighs contains the neighbours 
 Neighs=db.bgpNeighs
 Ribin=db.bgpRibin
 
