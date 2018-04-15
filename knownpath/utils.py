@@ -31,6 +31,13 @@ def relation(Neighs,a,b):
 	return 'n'
 
 
+# returns the new path with the extension and ulen indicator ''||'' if not present
+def extendPath(orignalPath, extended_AS):
+	if "||" in orignalPath:
+		return orignalPath+extended_AS+"|"
+	else:
+		return orignalPath+"|"+extended_AS+"|"
+
 
 
 
@@ -57,8 +64,6 @@ def valleyFree(Neighs,path, extended_AS):
 		return 0
 	else:
 		return 1
-
-
 
 
 
@@ -108,17 +113,42 @@ def pathFreq(Freq, path_array):
 	return min(freq)
 
 
+# returns path string 1|2|3||4|5| from path_array
+def makePath(path_array, ulen):
+	nlen=len(path_array)
+	temp=nlen - ulen
+	comp_path=""
+	for i in range(nlen):
+		comp_path+=path_array[i]
+		comp_path+="|"
+		if(i==temp-1):
+			comp_path+="|"
+
+	return comp_path
+
+
+# path="1|2|3|4|5|6"
+def makePathArray(path):
+	path=path.rstrip('|')
+	if "||" in path:
+		unsure_sec=path.split('||')
+		path_array=unsure_sec[0].split('|')+unsure_sec[1].split('|')
+	else:
+		path_array=path.split('|')
+	return path_array
+
+
 
 
 # path list contains path in the form of a|b|c||d|e where || stands for unsure path after
-
 def bestPath(Freq, path_list):
 	path_dict_array=[]
 	for path in path_list:
+		temp_path=path.rstrip('|')
 
-		unsure_sec=path.split('||')
+		unsure_sec=temp_path.split('||')
 		
-		ulen=len(unsure_sec[1])
+		ulen=len(unsure_sec[1].split('|'))
 
 		path_array=unsure_sec[0].split('|')+unsure_sec[1].split('|')
 		path_len=len(path_array)
@@ -131,6 +161,6 @@ def bestPath(Freq, path_list):
 		}
 		path_dict_array.append(path_dict)
 	# sorting based on len first, freq second and then ulen
-	return sorted(path_dict_array, key= lambda i:(i['len'],i['freq'], i['ulen']))
+	return sorted(path_dict_array, key= lambda i:(i['len'], i['freq'], i['ulen']))[0]['path']
 
 	
