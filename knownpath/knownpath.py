@@ -21,30 +21,42 @@ Freq=db.bgpFreq
 queue=Queue.Queue()
 
 def INITACTIVEQUEUE(prefix_data):
+	print("initactive")
 	baseASset=prefix_data['baseAs']
 	for v in baseASset:
 		queue.put(v)
 		surepath_array=surePath(v, prefix_data['paths'].values())
 		for sure in surepath_array:
 			res=ribin_insert(Ribin,prefix_data['prefix'],v,sure)
+	print("initactive done")
 
 
 
 def KNOWNPATH(prefix_data):
 	INITACTIVEQUEUE(prefix_data)
 	baseASset=prefix_data['baseAs']
+	my_iter=0
 	while(queue.qsize()>0):
+		print(my_iter)
+		my_iter+=1
 		u=queue.get()
 		u_neighs=peers(Neighs,u)
-		for v in u_neighs:
+		for v_neigh in u_neighs:
+			v=v_neigh[0]
 			ribin_object=Ribin.find_one({'prefix':prefix_data['prefix'], 'as':u})
 			P_u=bestPath(Freq, ribin_object['paths'])
-			if (v not in prefix_data['baseASset']) and (v not in makePathArray) and (valleyFree(Neighs, P_u, v)==1):
+			if (v not in prefix_data['baseAs']) and (v not in makePathArray(P_u)) and (valleyFree(Neighs, P_u, v)==1):
 				validPath=extendPath(P_u, v)
 				tempPath_object=Ribin.find_one({'prefix':prefix_data['prefix'], 'as':v})
+				if(tempPath_object==None):
+					tempPath_object={
+						'paths':[],
+						'prefix':prefix_data['prefix'],
+						'as':v
+					}
 				tempPath=bestPath(Freq, tempPath_object['paths'])
-				ribin_insert(Ribin, prefix_data['prefix'], v, tempPath)
-				if(tempPath != bestPath(tempPath_object['paths']+[validPath])) and (v not in queue.queue):
+				ribin_insert(Ribin, prefix_data['prefix'], v, validPath)
+				if(tempPath != bestPath(Freq, tempPath_object['paths']+[validPath])) and (v not in queue.queue):
 					queue.put(v)
 	
 
@@ -59,7 +71,6 @@ print("Prefix: "+sys.argv[1])
 
 
 prefix_data=Graph.find_one({'prefix':sys.argv[1]})
-print(queue.qsize())
 result=KNOWNPATH(prefix_data)
 
 # print makePath(["1", "2", "3", "4", "5"], 2)

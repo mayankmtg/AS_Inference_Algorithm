@@ -6,6 +6,8 @@ def peers(Neighs, u):
 	# return array of tupples of neighbour and type of neighbour
 	peers=Neighs.find_one({'as':u})
 	peer_tupples=[]
+	if(peers==None):
+		return peer_tupples
 	siblings=peers['neighbours']['siblings']
 	customers=peers['neighbours']['customers']
 	providers=peers['neighbours']['providers']
@@ -36,7 +38,8 @@ def extendPath(orignalPath, extended_AS):
 	if "||" in orignalPath:
 		return orignalPath+extended_AS+"|"
 	else:
-		return orignalPath+"|"+extended_AS+"|"
+		print(orignalPath, extended_AS)
+		return orignalPath + '|' + extended_AS + '|'
 
 
 
@@ -109,8 +112,11 @@ def pathFreq(Freq, path_array):
 	consec_freq=[]
 	for x,y in zip(path_array[:-1], path_array[1:]):
 		freq=Freq.find_one({'as1':x, 'as2':y})
-		consec_freq.append(freq['freq'])
-	return min(freq)
+		if(freq==None):
+			consec_freq.append(0)
+		else:
+			consec_freq.append(int(freq['freq']))
+	return min(consec_freq)
 
 
 # returns path string 1|2|3||4|5| from path_array
@@ -143,11 +149,14 @@ def makePathArray(path):
 # path list contains path in the form of a|b|c||d|e where || stands for unsure path after
 def bestPath(Freq, path_list):
 	path_dict_array=[]
+	if(len(path_list)==0):
+		return path_dict_array
 	for path in path_list:
 		temp_path=path.rstrip('|')
 
 		unsure_sec=temp_path.split('||')
-		
+		if(len(unsure_sec)<=1):
+			unsure_sec.append('')
 		ulen=len(unsure_sec[1].split('|'))
 
 		path_array=unsure_sec[0].split('|')+unsure_sec[1].split('|')

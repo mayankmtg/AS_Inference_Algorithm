@@ -10,7 +10,6 @@ timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 client= MongoClient('localhost', 27017)
 db=client.bgpPaths
 collection=db.bgpGraph
-freq=db.bgpFreq
 
 
 if(len(sys.argv)<2):
