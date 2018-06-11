@@ -8,7 +8,7 @@ widgets = ['Time:', pb.Percentage(), ' ',pb.Bar(marker=pb.RotatingMarker()), ' '
 
 timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 
-client= MongoClient('localhost', 27017)
+client= MongoClient('mongodb://mayank:mayank@192.168.2.75/bgpPaths', 27017)
 db=client.bgpPaths
 collection=db.bgpNeighs
 
