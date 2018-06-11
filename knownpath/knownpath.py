@@ -8,7 +8,7 @@ from utils import surePath, ribin_insert, peers, makePath, makePathArray, valley
 
 
 
-client= MongoClient('localhost', 27017)
+client= MongoClient('mongodb://mayank:mayank@192.168.2.75/bgpPaths', 27017)
 db=client.bgpPaths
 
 # Graph contains all the paths
