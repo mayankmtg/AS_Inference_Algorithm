@@ -6,7 +6,7 @@ import progressbar as pb
 
 widgets = ['Time:', pb.Percentage(), ' ',pb.Bar(marker=pb.RotatingMarker()), ' ', pb.ETA()]
 
-timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
+#timer = pb.ProgressBar(widgets=widgets, maxval=8100000).start()
 
 client= MongoClient('mongodb://mayank:mayank@192.168.2.75/bgpPaths', 27017)
 db=client.bgpPaths
@@ -17,7 +17,7 @@ if(len(sys.argv)<2):
 	sys.exit(0)
 
 with open(sys.argv[1]) as bgp_relations:
-	time=0
+#	time=0
 	for relation in bgp_relations:
 		relation_array=relation.split('|')
 		
@@ -60,7 +60,7 @@ with open(sys.argv[1]) as bgp_relations:
 			neighbour_data['neighbours']['providers'].append(relation_array[0])
 		collection.save(as_data)
 		collection.save(neighbour_data)
-		time+=1
-		timer.update(time)
-	timer.finish()
+#		time+=1
+#		timer.update(time)
+#	timer.finish()
 

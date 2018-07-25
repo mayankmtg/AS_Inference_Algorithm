@@ -21,14 +21,14 @@ Freq=db.bgpFreq
 queue=Queue.Queue()
 
 def INITACTIVEQUEUE(prefix_data):
-	print("initactive")
+#	print("initactive")
 	baseASset=prefix_data['baseAs']
 	for v in baseASset:
 		queue.put(v)
 		surepath_array=surePath(v, prefix_data['paths'].values())
 		for sure in surepath_array:
 			res=ribin_insert(Ribin,prefix_data['prefix'],v,sure)
-	print("initactive done")
+#	print("initactive done")
 
 
 
@@ -37,7 +37,7 @@ def KNOWNPATH(prefix_data):
 	baseASset=prefix_data['baseAs']
 	my_iter=0
 	while(queue.qsize()>0):
-		print(my_iter)
+#		print(my_iter)
 		my_iter+=1
 		u=queue.get()
 		u_neighs=peers(Neighs,u)
@@ -71,6 +71,6 @@ print("Prefix: "+sys.argv[1])
 
 
 prefix_data=Graph.find_one({'prefix':sys.argv[1]})
-result=KNOWNPATH(prefix_data)
+KNOWNPATH(prefix_data)
 
 # print makePath(["1", "2", "3", "4", "5"], 2)

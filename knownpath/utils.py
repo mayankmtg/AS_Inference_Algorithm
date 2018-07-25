@@ -38,7 +38,7 @@ def extendPath(orignalPath, extended_AS):
 	if "||" in orignalPath:
 		return orignalPath+extended_AS+"|"
 	else:
-		print(orignalPath, extended_AS)
+#		print(orignalPath, extended_AS)
 		return orignalPath + '|' + extended_AS + '|'
 
 
