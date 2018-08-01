@@ -17,6 +17,7 @@ Graph=db.bgpGraph
 Neighs=db.bgpNeighs
 Ribin=db.bgpRibin
 Freq=db.bgpFreq
+Rels=db.bgpRel
 
 queue=Queue.Queue()
 
