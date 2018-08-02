@@ -48,17 +48,21 @@ def extendPath(orignalPath, extended_AS):
 
 # method returns 1 if the extended path is valley free
 def valleyFree(Rel,path, extended_AS):
-	prev_path=path.split('|')
-
-	# path of the form '1|2|3|4|' therefore 1 is subtracted
-	n=len(prev_path)-1
+	prev_path=makePathArray(path)
+	n=len(prev_path)
 	# main concentration on relationship of n-2 and n-1 elements of the array only
+	
+	if(n==1 and relation(Rel,prev_path[n-1],extended_AS)!='n'):
+		return 1
+	elif(n==1):
+		return 0
 
 	last_relation=relation(Rel,prev_path[n-2], prev_path[n-1])
 	new_relation=relation(Rel,prev_path[n-1], extended_AS)
 
 	# last_relation=='p'   => provider to customer
 	if(last_relation=='n' or new_relation=='n'):
+		print("hey: "+prev_path[n-2]+"-"+prev_path[n-1])
 		return 0
 	if(last_relation=='p' and new_relation=='c'):
 		return 0
@@ -136,7 +140,7 @@ def makePath(path_array, ulen):
 	return comp_path
 
 
-# path="1|2|3|4|5|6"
+# path="1|2|3|4||5|6"
 def makePathArray(path):
 	path=path.rstrip('|')
 	if "||" in path:
