@@ -2,35 +2,37 @@ import pymongo
 from pymongo import MongoClient
 import sys
 
-def peers(Neighs, u):
-	# return array of tupples of neighbour and type of neighbour
-	peers=Neighs.find_one({'as':u})
-	peer_tupples=[]
-	if(peers==None):
-		return peer_tupples
-	siblings=peers['neighbours']['siblings']
-	customers=peers['neighbours']['customers']
-	providers=peers['neighbours']['providers']
-	for sibling in siblings:
-		peer_tupples.append((sibling, 's'))
-	for customer in customers:
-		peer_tupples.append((customer, 'c'))
-	for provider in providers:
-		peer_tupples.append((provider, 'p'))
 
-	return peer_tupples
+def peers(Rel, u):
+	# return array of tupples of neighbour and type of neighbour
+	peers_found=Rel.find({'as1':u})
+	return peers_found
+
+	# peer_tupples=[]
+	# if(peers==None):
+	# 	return peer_tupples
+	# siblings=peers['neighbours']['siblings']
+	# customers=peers['neighbours']['customers']
+	# providers=peers['neighbours']['providers']
+	# for sibling in siblings:
+	# 	peer_tupples.append((sibling, 's'))
+	# for customer in customers:
+	# 	peer_tupples.append((customer, 'c'))
+	# for provider in providers:
+	# 	peer_tupples.append((provider, 'p'))
+
+	# return peer_tupples
 
 
 # return 'p' if a is provider of b and 'c', 's' otherwise else returns 'n' if no relation
-def relation(Neighs,a,b):
+def relation(Rel,a,b):
 	# find the relationship of a to b
 
-	peers_a=peers(Neighs,a)
-	for i in peers_a:
-		if(i[0]==b):
-			return i[1]
-
-	return 'n'
+	rel=Rel.find_one({"as1":a,"as2":b})
+	if(rel==None):
+		return str('n')
+	else:
+		return str(rel['rel'])
 
 
 # returns the new path with the extension and ulen indicator ''||'' if not present
@@ -56,7 +58,8 @@ def valleyFree(Neighs,path, extended_AS):
 	new_relation=relation(Neighs,prev_path[n-1], extended_AS)
 
 	# last_relation=='p'   => provider to customer
-
+	if(last_relation=='n' or new_relation=='n'):
+		return 0
 	if(last_relation=='p' and new_relation=='c'):
 		return 0
 	elif(last_relation=='p' and new_relation=='s'):

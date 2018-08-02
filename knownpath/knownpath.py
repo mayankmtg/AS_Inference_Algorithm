@@ -17,7 +17,7 @@ Graph=db.bgpGraph
 Neighs=db.bgpNeighs
 Ribin=db.bgpRibin
 Freq=db.bgpFreq
-Rels=db.bgpRel
+Rel=db.bgpRel
 
 queue=Queue.Queue()
 
@@ -41,9 +41,9 @@ def KNOWNPATH(prefix_data):
 #		print(my_iter)
 		my_iter+=1
 		u=queue.get()
-		u_neighs=peers(Neighs,u)
+		u_neighs=peers(Rel,u)
 		for v_neigh in u_neighs:
-			v=v_neigh[0]
+			v=v_neigh['as2']
 			ribin_object=Ribin.find_one({'prefix':prefix_data['prefix'], 'as':u})
 			P_u=bestPath(Freq, ribin_object['paths'])
 			if (v not in prefix_data['baseAs']) and (v not in makePathArray(P_u)) and (valleyFree(Neighs, P_u, v)==1):
