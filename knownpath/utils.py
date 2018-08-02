@@ -47,15 +47,15 @@ def extendPath(orignalPath, extended_AS):
 
 
 # method returns 1 if the extended path is valley free
-def valleyFree(Neighs,path, extended_AS):
+def valleyFree(Rel,path, extended_AS):
 	prev_path=path.split('|')
 
 	# path of the form '1|2|3|4|' therefore 1 is subtracted
 	n=len(prev_path)-1
 	# main concentration on relationship of n-2 and n-1 elements of the array only
 
-	last_relation=relation(Neighs,prev_path[n-2], prev_path[n-1])
-	new_relation=relation(Neighs,prev_path[n-1], extended_AS)
+	last_relation=relation(Rel,prev_path[n-2], prev_path[n-1])
+	new_relation=relation(Rel,prev_path[n-1], extended_AS)
 
 	# last_relation=='p'   => provider to customer
 	if(last_relation=='n' or new_relation=='n'):

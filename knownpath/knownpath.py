@@ -46,7 +46,7 @@ def KNOWNPATH(prefix_data):
 			v=v_neigh['as2']
 			ribin_object=Ribin.find_one({'prefix':prefix_data['prefix'], 'as':u})
 			P_u=bestPath(Freq, ribin_object['paths'])
-			if (v not in prefix_data['baseAs']) and (v not in makePathArray(P_u)) and (valleyFree(Neighs, P_u, v)==1):
+			if (v not in prefix_data['baseAs']) and (v not in makePathArray(P_u)) and (valleyFree(Rel, P_u, v)==1):
 				validPath=extendPath(P_u, v)
 				tempPath_object=Ribin.find_one({'prefix':prefix_data['prefix'], 'as':v})
 				if(tempPath_object==None):
