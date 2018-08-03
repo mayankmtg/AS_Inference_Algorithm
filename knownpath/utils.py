@@ -62,7 +62,7 @@ def valleyFree(Rel,path, extended_AS):
 
 	# last_relation=='p'   => provider to customer
 	if(last_relation=='n' or new_relation=='n'):
-		print("hey: "+prev_path[n-2]+"-"+prev_path[n-1])
+#		print("hey: "+prev_path[n-2]+"-"+prev_path[n-1])
 		return 0
 	if(last_relation=='p' and new_relation=='c'):
 		return 0
