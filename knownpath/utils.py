@@ -6,6 +6,8 @@ import sys
 def peers(Rel_as1_ind, u):
 	# return array of tupples of neighbour and type of neighbour
 	peers_found=Rel_as1_ind.get(u)
+	if(peers_found==None):
+		return []
 	return peers_found
 
 	# peer_tupples=[]

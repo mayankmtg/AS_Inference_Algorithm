@@ -9,7 +9,6 @@ from utils import surePath, ribin_insert, peers, makePath, makePathArray, valley
 
 # indexing based on single key, dict get returns list of the values with value as that key
 # list is because there are multiple objects with same value for one key
-# incomplete but kept for reference
 
 
 def build_ind_sin(seq,key):
