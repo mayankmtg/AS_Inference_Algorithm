@@ -3,9 +3,9 @@ from pymongo import MongoClient
 import sys
 
 
-def peers(Rel, u):
+def peers(Rel_as1_ind, u):
 	# return array of tupples of neighbour and type of neighbour
-	peers_found=Rel.find({'as1':u})
+	peers_found=Rel_as1_ind.get(u)
 	return peers_found
 
 	# peer_tupples=[]
@@ -25,10 +25,10 @@ def peers(Rel, u):
 
 
 # return 'p' if a is provider of b and 'c', 's' otherwise else returns 'n' if no relation
-def relation(Rel,a,b):
+def relation(Rel_as1_as2_ind,a,b):
 	# find the relationship of a to b
 
-	rel=Rel.find_one({"as1":a,"as2":b})
+	rel=Rel_as1_as2_ind.get(a + '_' + b)
 	if(rel==None):
 		return str('n')
 	else:
@@ -47,18 +47,18 @@ def extendPath(orignalPath, extended_AS):
 
 
 # method returns 1 if the extended path is valley free
-def valleyFree(Rel,path, extended_AS):
+def valleyFree(Rel_as1_as2_ind, path, extended_AS):
 	prev_path=makePathArray(path)
 	n=len(prev_path)
 	# main concentration on relationship of n-2 and n-1 elements of the array only
 	
-	if(n==1 and relation(Rel,prev_path[n-1],extended_AS)!='n'):
+	if(n==1 and relation(Rel_as1_as2_ind, prev_path[n-1], extended_AS) != 'n'):
 		return 1
 	elif(n==1):
 		return 0
 
-	last_relation=relation(Rel,prev_path[n-2], prev_path[n-1])
-	new_relation=relation(Rel,prev_path[n-1], extended_AS)
+	last_relation=relation(Rel_as1_as2_ind, prev_path[n-2], prev_path[n-1])
+	new_relation=relation(Rel_as1_as2_ind, prev_path[n-1], extended_AS)
 
 	# last_relation=='p'   => provider to customer
 	if(last_relation=='n' or new_relation=='n'):
@@ -115,10 +115,10 @@ def ribin_insert(Ribin, prefix, auto_system, new_path):
 
 
 # the Freq is the bgpFreq collection and path is any path separated with '|'
-def pathFreq(Freq, path_array):
+def pathFreq(Freq_as1_as2_ind, path_array):
 	consec_freq=[]
 	for x,y in zip(path_array[:-1], path_array[1:]):
-		freq=Freq.find_one({'as1':x, 'as2':y})
+		freq=Freq_as1_as2_ind.get(x + '_' + y)
 		if(freq==None):
 			consec_freq.append(0)
 		else:
@@ -154,7 +154,7 @@ def makePathArray(path):
 
 
 # path list contains path in the form of a|b|c||d|e where || stands for unsure path after
-def bestPath(Freq, path_list):
+def bestPath(Freq_as1_as2_ind, path_list):
 	path_dict_array=[]
 	if(len(path_list)==0):
 		return path_dict_array
@@ -168,7 +168,7 @@ def bestPath(Freq, path_list):
 
 		path_array=unsure_sec[0].split('|')+unsure_sec[1].split('|')
 		path_len=len(path_array)
-		freq=pathFreq(Freq, path_array)
+		freq=pathFreq(Freq_as1_as2_ind, path_array)
 		path_dict={
 			'path':path,
 			'len':path_len,
