@@ -10,15 +10,27 @@ Rel=db.bgpRel
 
 
 
-# return 'p' if a is provider of b and 'c', 's' otherwise else returns 'n' if no relation
-def relation(a,b):
-        # find the relationship of a to b
+def build_ind_sin(seq,key):
+	dic=dict()
+	for (index,d) in enumerate(seq):
+		if(dic.get(d[key])==None):
+			dic[d[key]]=[]
+		dic[d[key]].append(dict(d,index=index))
+	return dic
 
-        rel=Rel.find_one({"as1":a,"as2":b})
-        if(rel==None):
-                return str('n')
-        else:
-                return str(rel['rel'])
+
+def build_ind_comb(seq,key1,key2):
+	return dict((d[key1]+"_"+d[key2], dict(d,index=index)) for (index,d) in enumerate(seq))
+
+Rel_list=list(Rel.find())
+Rel_as1_as2_ind=build_ind_comb(Rel_list, "as1","as2")
+
+def relation(a,b):
+	rel=Rel_as1_as2_ind.get(a + '_' + b)
+	if(rel==None):
+		return str('n')
+	else:
+		return str(rel['rel'])
 
 
 def check_valley(path_array):
@@ -37,12 +49,10 @@ def check_valley(path_array):
 	return False
 
 
-
-
 data=Graph.find()
 count=0
 for prefix_data in data:
-#	print(prefix_data['prefix'])
+	#print(prefix_data['prefix'])
 
 	paths=prefix_data['paths']
 	#print(paths)
@@ -51,9 +61,10 @@ for prefix_data in data:
 	for pn,p in paths.iteritems():
 		p=p.rstrip('|')
 		path_array=p.split('|')
-		if(check_valley(path_array)):
-			count+=1
-#			print(p)
+		if(len(path_array)>2):		
+			if(check_valley(path_array)):
+				count+=1
+				print(p)
 #	print(count)
 print(count)
 
