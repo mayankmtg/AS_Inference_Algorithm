@@ -34,19 +34,30 @@ def relation(a,b):
 
 
 def check_valley(path_array):
+	temp_object = {
+		'trip':'111',
+		'rel':'nv'
+	}
 	for p,q,r in zip(path_array[:-2],path_array[1:-1], path_array[2:]):
 		rel1=relation(p,q)
 		rel2=relation(q,r)
-
 		if(rel1=='p' and rel2=='c'):
-			return True
+			temp_object['trip']=p+'|'+q+'|'+r
+			temp_object['rel']='pc'
+			return temp_object
 		elif(rel1=='p' and rel2=='s'):
-			return True
+			temp_object['trip']=p+'|'+q+'|'+r
+                        temp_object['rel']='ps'
+			return temp_object
 		elif(rel1=='s' and rel2=='c'):
-			return True
+			temp_object['trip']=p+'|'+q+'|'+r
+                        temp_object['rel']='sc'
+			return temp_object
 		elif(rel1=='s' and rel2=='s'):
-			return True
-	return False
+			temp_object['trip']=p+'|'+q+'|'+r
+                        temp_object['rel']='ss'
+			return temp_object
+	return temp_object
 
 
 data=Graph.find()
@@ -61,10 +72,12 @@ for prefix_data in data:
 	for pn,p in paths.iteritems():
 		p=p.rstrip('|')
 		path_array=p.split('|')
-		if(len(path_array)>2):		
-			if(check_valley(path_array)):
-				count+=1
-				print(p)
+		if(len(path_array)>2):
+			path_property=check_valley(path_array)	
+			if(path_property['rel']!='nv'):
+				print p,
+				print path_property['trip'],
+				print path_property['rel']
 #	print(count)
-print(count)
+#print(count)
 
