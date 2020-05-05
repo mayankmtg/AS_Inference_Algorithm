@@ -1,10 +1,11 @@
 from sqlalchemy import Column, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 
+# variables
 Base = declarative_base()
 
-# Table containing the formatted routeview entries
-class BGPGaph:
+class BGPGaph(Base):
+    
     """
     Table containing all the routeview entries in formatted sequence
     prefix - contains the IP prefix from the routeview entry
@@ -12,7 +13,7 @@ class BGPGaph:
     TODO :: Check if the path is from or to the prefix and mention clearly in the documentation here
     """
 
-    __tablename__ = 'bgpGraph'
+    __tablename__ = 'bgp_graph'
 
     id = Column(Integer, primary_key=True)
     prefix = Column(String)
@@ -21,3 +22,12 @@ class BGPGaph:
     def __repr__(self):
         return "id: {} - prefix: {}".format(self.id, self.prefix)
 
+
+def get_declarative_base() -> DeclarativeMeta:
+    """
+    Method to get the declarative base variable that links all models
+
+    Returns:
+        DeclarativeMeta: declarative base with defined models
+    """
+    return Base
