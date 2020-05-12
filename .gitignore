@@ -1,3 +1,6 @@
+# Visual Studio
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -5,3 +8,7 @@ __pycache__/
 
 # Virtual Environment
 knownpathenv/
+
+# Data Directories
+old-data/
+app/data/

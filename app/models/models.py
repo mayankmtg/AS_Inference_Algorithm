@@ -1,8 +1,30 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 
 # variables
 Base = declarative_base()
+
+class IPPrefix(Base):
+    """
+    Table containing all the uniqie IP Prefixes and prefix ids
+    """
+    
+    __tablename__ = "ip_prefix"
+
+    id = Column(Integer, primary_key=True)
+    prefix = Column(String, unique=True)
+
+    def __repr__(self):
+        return "id: {} - prefix: {}".format(self.id, self.prefix)
+
+class BaseAS(Base):
+    """
+    Table containing all the BaseAS sets
+    """
+    __tablename__ = "base_as"
+    id = Column(Integer, primary_key=True)
+    prefix_id = Column(Integer, ForeignKey(IPPrefix.id))
+    asn = Column(Integer)
 
 class BGPGaph(Base):
     
@@ -16,12 +38,11 @@ class BGPGaph(Base):
     __tablename__ = 'bgp_graph'
 
     id = Column(Integer, primary_key=True)
-    prefix = Column(String)
+    prefix_id = Column(Integer, ForeignKey(IPPrefix.id))
     path = Column(String)
 
     def __repr__(self):
-        return "id: {} - prefix: {}".format(self.id, self.prefix)
-
+        return "id: {} - prefix: {} - path: {}".format(self.id, self.prefix_id, self.path)
 
 def get_declarative_base() -> DeclarativeMeta:
     """
