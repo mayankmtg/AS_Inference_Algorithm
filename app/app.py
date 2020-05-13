@@ -3,7 +3,7 @@ from models.models import get_declarative_base
 from optparse import OptionParser
 from sqlalchemy.orm import sessionmaker
 import os
-from populate.populate import PopulateBGPGraph 
+from populate.populate_BGPGraph import PopulateBGPGraph 
 
 
 # Optional Arguments
